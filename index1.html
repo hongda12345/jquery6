@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="jquery-3.2.1.js"></script>
+</head>
+<style>
+    *{
+    	margin: 0;
+    	padding: 0;
+    }
+	.circle{
+		width: 30px;
+		height: 30px;
+		background: red;
+		border-radius: 50%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		opacity: 0;
+	}
+</style>
+<body>
+	
+	<script>
+		for(let i=0;i<50;i++){
+			$(function(){
+            let width=height=Math.floor(Math.random()*40+40);
+		    let top=Math.random()*(innerHeight-100);
+		    let left=Math.random()*(innerWidth-100);
+		    let r=Math.floor(Math.random()*256);
+                g=Math.floor(Math.random()*256);
+                b=Math.floor(Math.random()*256);
+            $('<div>').addClass('circle').appendTo(document.body).css({width,height,top,left,background:`rgb(${r},${g},${b})`}).delay(i*10).animate({left,top,opacity:1});
+	    })
+		}
+	    
+	</script>
+</body>
+</html>

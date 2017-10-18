@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="jquery-3.2.1.js"></script>
+</head>
+<style>
+	.h_top{
+		width: 100%;
+		height: 1500px;
+		background: #00446f;
+	}
+	.h_top h3{
+		text-align: center;
+		line-height: 60px;
+		color: #fff;
+	}
+	.digital{
+		width: 100%;
+		height: 150px;
+		background: #049dfd;
+		margin-bottom: 500px;
+		color: #fff;
+	}
+	.main{
+		width: 1100px;
+		height: 150px;
+		margin:0 auto;
+		font-size: 0;
+	}
+    .mumping_mun li{
+    	width: 228px;
+    	display: inline-block;
+    	margin: 30px auto;
+    }
+    .mumping_mun{
+    	width: 1140px;
+    	list-style: none;
+    }
+    .mumping_mun p{
+    	font-size: 20px;
+    	width: 100%;
+    	display: block;
+    	clear: both;
+    }
+    .mumping_mun h2{
+    	font-size: 35px;
+    	font-weight: normal;
+    	float: left;
+    	margin-right: 10px;
+    }
+</style>
+<body>
+	<div class="h_top">
+		<h3>向下滚动页面效果</h3>
+	</div>
+	<div class="digital">
+		<div class="main">
+			<ul class="mumping_mun">
+				<li>
+					<div class="mun_top">
+						<h2 class="timer count-title" id="count-number" data-to="300" data-speed="1500"></h2>
+						<p>PROJECT DONE</p>  
+					</div>
+				</li>
+				<li>
+					<div class="mun_top">
+						<h2 class="timer count-title" id="count-number" data-to="300" data-speed="1500"></h2>
+						<p>COUNTRIES</p> 
+					</div>
+				</li>
+				<li>
+					<div class="mun_top">
+						<h2 class="timer count-title" id="count-number" data-to="300" data-speed="1500"></h2>
+						<p>TOTAL CLIENT</p>  
+					</div>
+				</li>
+				<li>
+					<div class="mun_top">
+						<h2 class="timer count-title" id="count-number" data-to="300" data-speed="1500"></h2>
+						<p>AWARDS GOT</p> 
+					</div>
+				</li>
+				<li>
+					<div class="mun_top">
+						<h2 class="timer count-title" id="count-number" data-to="300" data-speed="1500"></h2>
+						<p>CUP OF COFFEE</p>  
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<script>
+		/*窗口显示才加载*/
+		let wrapTop=$('.digital').offset().top;
+		let istrue=true;
+		$(window).on('scroll',function(){
+			let s=$(window).scrollTop();
+			if(s>wrapTop-500&& istrue){
+				$(".timer").each(count);
+				function count(a) {
+			        var b = $(this);
+			        a = $.extend({},
+			        a || {},
+			        b.data("countToOptions") || {});
+			        b.countTo(a)
+		        }
+		istrue = false;
+			}
+		})
+        /*设置计数*/
+        $.fn.countTo = function (options) {
+	        options = options || {};
+	        return $(this).each(function () {
+		//当前元素的选项
+		var settings = $.extend({}, $.fn.countTo.defaults, {
+			from:            $(this).data('from'),
+			to:              $(this).data('to'),
+			speed:           $(this).data('speed'),
+			refreshInterval: $(this).data('refresh-interval'),
+			decimals:        $(this).data('decimals')
+		}, options);
+		//更新值
+		var loops = Math.ceil(settings.speed / settings.refreshInterval),
+			increment = (settings.to - settings.from) / loops;
+		//更改应用和变量
+		var self = this,
+		$self = $(this),
+		loopCount = 0,
+		value = settings.from,
+		data = $self.data('countTo') || {};
+		$self.data('countTo', data);
+		//如果有间断，找到并清除
+		if (data.interval) {
+			clearInterval(data.interval);
+		};
+		data.interval = setInterval(updateTimer, settings.refreshInterval);
+		//初始化起始值
+		render(value);
+		function updateTimer() {
+			value += increment;
+			loopCount++;
+			render(value);
+			if (typeof(settings.onUpdate) == 'function') {
+				settings.onUpdate.call(self, value);
+			}
+			if (loopCount >= loops) {
+				//移出间隔
+				$self.removeData('countTo');
+				clearInterval(data.interval);
+				value = settings.to;
+				if (typeof(settings.onComplete) == 'function') {
+					settings.onComplete.call(self, value);
+				}
+			}
+		}
+		function render(value) {
+			var formattedValue = settings.formatter.call(self, value, settings);
+			$self.html(formattedValue);
+		}
+		});
+	    };
+	    $.fn.countTo.defaults={
+		    from:0,               //数字开始的值
+		    to:0,                 //数字结束的值
+		    speed:1000,           //设置步长的时间
+		    refreshInterval:100,  //隔间值
+		    decimals:0,           //显示小位数
+		    formatter: formatter, //渲染之前格式化
+		    onUpdate:null,        //每次更新前的回调方法
+		    onComplete:null       //完成更新的回调方法
+	    };
+	    function formatter(value, settings){
+		    return value.toFixed(settings.decimals);
+	    }
+	    //自定义格式
+	    $('#count-number').data('countToOptions',{
+		    formmatter:function(value, options){
+			    return value.toFixed(options.decimals).replace(/\B(?=(?:\d{3})+(?!\d))/g, ',');
+		    }
+	    });
+	    //定时器
+	    $('.timer').each(count);
+	    function count(options){
+		    var $this=$(this);
+		    options=$.extend({}, options||{}, $this.data('countToOptions')||{});
+		    $this.countTo(options);
+	    }
+	</script>
+</body>
+</html>
